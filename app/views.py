@@ -7,9 +7,21 @@ from util import NLTKStem
 
 
 class StemView(APIView):
+    """
+    View for Stemming words
+    """
 
     def get(self, request):
         data = request.GET
-        st = NLTKStem(data)
-        result = st.stem()
-        return Response({'test': result})
+
+        if not data.get('word'):
+            return Response({
+                'message': 'word parameter missing',
+                'status': False
+                })
+
+        stem_obj = NLTKStem(data)
+
+        res = stem_obj.stem()
+        return Response(res)
+
