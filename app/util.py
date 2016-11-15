@@ -3,9 +3,10 @@ from nltk.stem import SnowballStemmer
 from nltk.stem.lancaster import LancasterStemmer
 
 from nltk import word_tokenize
-from nltk.tokenize import TweetTokenizer
+from nltk.tokenize import TweetTokenizer, StanfordTokenizer
+from nltk.tokenize.api import StringTokenizer
 
-from app.constants import DEFAULT_STEMMER
+from app.constants import DEFAULT_STEMMER, DEFAULT_TOKENIZER
 
 class NLTKStem(object):
     """
@@ -39,6 +40,7 @@ class NLTKStem(object):
         'snowball': SnowballStemmer,
         'lancaster': LancasterStemmer,
         }
+    dispatch['default'] = dispatch[DEFAULT_STEMMER]
 
     def __init__(self, options):
         self.options = options
@@ -47,7 +49,6 @@ class NLTKStem(object):
         stemmer = self.options.get('stemmer', DEFAULT_STEMMER)
         stemmer_obj = self.dispatch.get(stemmer, self.dispatch[DEFAULT_STEMMER])
 
-        print dir(stemmer_obj)
         if stemmer_obj == SnowballStemmer:
             ignore_stopwords = False
 
@@ -72,9 +73,32 @@ class NLTKStem(object):
 
 
 class NLTKTokenize(object):
+    dispatch = {
+            'word': word_tokenize,
+            'string': StringTokenizer,
+            'tweet': TweetTokenizer,
+            }
+    dispatch['default'] = dispatch[DEFAULT_TOKENIZER]
 
     def __init__(self, options):
         self.options = options
 
     def tokenize(self):
-        print 'something'
+        tokenizer = self.options.get('tokenizer', DEFAULT_TOKENIZER)
+        tokenizer_obj = self.dispatch.get(tokenizer, self.dispatch[DEFAULT_TOKENIZER])
+
+        print tokenizer, tokenizer_obj
+        if tokenizer_obj == word_tokenize:
+            result = tokenizer_obj(self.options['string'])
+
+        else:
+            result = tokenizer_obj().tokenize(self.options['string'])
+
+        return self._dump(result)
+
+    def _dump(self, result):
+        response = {
+                'status': True,
+                'result': result
+                }
+        return response
