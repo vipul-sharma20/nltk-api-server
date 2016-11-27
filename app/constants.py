@@ -1,0 +1,3 @@
+DEFAULT_STEMMER = 'snowball'
+
+DEFAULT_TOKENIZER = 'word'
