@@ -3,7 +3,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from util import NLTKStem, NLTKTokenize
+from util import NLTKStem, NLTKTokenize, NLTKTag
 
 
 class StemView(APIView):
@@ -14,9 +14,9 @@ class StemView(APIView):
     def get(self, request):
         data = request.GET
 
-        if not data.get('word'):
+        if not data.get('words'):
             return Response({
-                'message': 'word parameter missing',
+                'message': 'words parameter missing',
                 'status': False,
                 })
 
@@ -24,6 +24,7 @@ class StemView(APIView):
 
         res = stem_obj.stem()
         return Response(res)
+
 
 class TokenizeView(APIView):
     """
@@ -33,14 +34,34 @@ class TokenizeView(APIView):
     def get(self, request):
         data = request.GET
 
-        if not data.get('string'):
+        if not data.get('sentence'):
             return Response({
-                'message': 'string parameter missing',
+                'message': 'sentence parameter missing',
                 'status': False
                 })
 
         tokenize_obj = NLTKTokenize(data)
         res = tokenize_obj.tokenize()
+
+        return Response(res)
+
+
+class POSTagView(APIView):
+    """
+    View for Part Of Speech tagging
+    """
+
+    def get(self, request):
+        data = request.GET
+
+        if not data.get('sentence'):
+            return Response({
+                'message': 'sentence parameter missing',
+                'status': False
+                })
+
+        pos_obj = NLTKTag(data)
+        res = pos_obj.pos_tag()
 
         return Response(res)
 
