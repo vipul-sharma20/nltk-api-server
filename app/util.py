@@ -2,12 +2,16 @@ from nltk.stem.porter import PorterStemmer
 from nltk.stem import SnowballStemmer
 from nltk.stem.lancaster import LancasterStemmer
 
-from nltk import word_tokenize, pos_tag, UnigramTagger, BigramTagger, RegexpTagger
+from nltk import word_tokenize, pos_tag, UnigramTagger, BigramTagger, \
+    RegexpTagger
 from nltk.tokenize import TweetTokenizer
 from nltk.corpus import brown
 
 from app.constants import DEFAULT_STEMMER, DEFAULT_TOKENIZER, DEFAULT_TAGGER, \
     DEFAULT_TRAIN, TRAINERS
+
+import os.path
+from pickle import load, dump
 
 
 class NLTKStem(object):
@@ -134,7 +138,7 @@ class NLTKTokenize(object):
 
 class NLTKTag(object):
     """
-    NLTK POS tagger used: pos_tag
+    NLTK POS tagger used: pos_tag, UnigramTagger, BigramTagger & RegexpTagger
 
     Accepts:
 
@@ -168,11 +172,12 @@ class NLTKTag(object):
         tokens = res['result']
         tags = []
 
+        # Performs Bigram / Unigram / Regex Tagging
         if self.options.get('tagger') in ['unigram', 'bigram', 'regex']:
-            if self.options.get('train') in TRAINERS:
-                train = brown.tagged_sents(categories=self.options['train'])
-            else:
-                train = brown.tagged_sents(categories=DEFAULT_TRAIN)
+            trainer = self.options['train'] if self.options.get(
+                'train') in TRAINERS else DEFAULT_TRAIN
+
+            train = brown.tagged_sents(categories=trainer)
 
             # Create your custom regex tagging pattern here
             regex_tag = RegexpTagger([
@@ -185,21 +190,43 @@ class NLTKTag(object):
                 (r'.*ed$', 'VBD'),
                 (r'.*', 'NN')
             ])
-            unigram_tag = UnigramTagger(train, backoff=regex_tag)
-            if self.options['tagger'] == 'bigram':
-                bigram_tag = BigramTagger(train, backoff=unigram_tag)
-                tags = bigram_tag.tag(tokens)
-            elif self.options['tagger'] == 'unigram':
-                tags = unigram_tag.tag(tokens)
-            else:
-                tags = regex_tag.tag(tokens)
 
+            current = os.path.dirname(os.path.abspath(__file__))
+
+            # Unigram tag training data load / dump pickle
+            pkl_name = current + '/trained/unigram_' + trainer + '.pkl'
+            if os.path.isfile(pkl_name):
+                with open(pkl_name, 'rb') as pkl:
+                    unigram_tag = load(pkl)
+            else:
+                unigram_tag = UnigramTagger(train, backoff=regex_tag)
+                with open(pkl_name, 'wb') as pkl:
+                    dump(unigram_tag, pkl, -1)
+
+            # Bigram tag training data load / dump pickle
+            if self.options['tagger'] == 'bigram':
+                pkl_name = current + '/trained/bigram_' + trainer + '.pkl'
+                if os.path.isfile(pkl_name):
+                    with open(pkl_name, 'rb') as pkl:
+                        bigram_tag = load(pkl)
+                else:
+                    bigram_tag = BigramTagger(train, backoff=unigram_tag)
+                    with open(pkl_name, 'wb') as pkl:
+                        dump(bigram_tag, pkl, -1)
+                tags = bigram_tag.tag(tokens)  # Bigram tagging performed here
+            elif self.options['tagger'] == 'unigram':
+                tags = unigram_tag.tag(tokens)  # Unigram tagging performed here
+            else:
+                tags = regex_tag.tag(tokens)  # Regex tagging performed here
+
+        # Performs default pos_tag
         elif self.options.get('tagger', DEFAULT_TAGGER) == 'pos':
             tags = pos_tag(tokens)
 
         return self._dump(tags)
 
-    def _dump(self, result):
+    @staticmethod
+    def _dump(result):
         response = {
             'status': True,
             'result': result
