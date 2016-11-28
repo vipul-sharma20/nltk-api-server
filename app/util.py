@@ -185,7 +185,6 @@ class NLTKTag(object):
                 (r'.*ed$', 'VBD'),
                 (r'.*', 'NN')
             ])
-            tags = []
             unigram_tag = UnigramTagger(train, backoff=regex_tag)
             if self.options['tagger'] == 'bigram':
                 bigram_tag = BigramTagger(train, backoff=unigram_tag)
