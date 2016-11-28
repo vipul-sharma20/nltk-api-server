@@ -2,10 +2,12 @@ from nltk.stem.porter import PorterStemmer
 from nltk.stem import SnowballStemmer
 from nltk.stem.lancaster import LancasterStemmer
 
-from nltk import word_tokenize, pos_tag
+from nltk import word_tokenize, pos_tag, UnigramTagger, BigramTagger, RegexpTagger
 from nltk.tokenize import TweetTokenizer
+from nltk.corpus import brown
 
-from app.constants import DEFAULT_STEMMER, DEFAULT_TOKENIZER
+from app.constants import DEFAULT_STEMMER, DEFAULT_TOKENIZER, DEFAULT_TAGGER, \
+    DEFAULT_TRAIN, TRAINERS
 
 
 class NLTKStem(object):
@@ -137,6 +139,9 @@ class NLTKTag(object):
     Accepts:
 
     /api/tag?sentence=<sentence>/
+    /api/tag?sentence=<sentence>&tagger=<pos/unigram/bigram/default>/
+    /api/tag?sentence=<sentence>&tagger=<pos/unigram/bigram/default>&train=<categories>/
+
 
     Query Parameters:
 
@@ -145,7 +150,13 @@ class NLTKTag(object):
                 type: string
 
         * Optional:
-            None
+            1. tagger:
+                value: pos/unigram/bigram/regex
+                default: pos_tag
+            2. train (iff unigram/bigram):
+                value: 'news', 'editorial', 'reviews', 'religion',
+                       'learned', 'science_fiction', 'romance', 'humor'
+                default: 'news'
     """
 
     def __init__(self, options):
@@ -155,8 +166,37 @@ class NLTKTag(object):
         tokenize_obj = NLTKTokenize(self.options)
         res = tokenize_obj.tokenize()
         tokens = res['result']
+        tags = []
 
-        tags = pos_tag(tokens)
+        if self.options.get('tagger') in ['unigram', 'bigram', 'regex']:
+            if self.options.get('train') in TRAINERS:
+                train = brown.tagged_sents(categories=self.options['train'])
+            else:
+                train = brown.tagged_sents(categories=DEFAULT_TRAIN)
+
+            # Create your custom regex tagging pattern here
+            regex_tag = RegexpTagger([
+                (r'^[-\:]?[0-9]+(.[0-9]+)?$', 'CD'),
+                (r'.*able$', 'JJ'),
+                (r'^[A-Z].*$', 'NNP'),
+                (r'.*ly$', 'RB'),
+                (r'.*s$', 'NNS'),
+                (r'.*ing$', 'VBG'),
+                (r'.*ed$', 'VBD'),
+                (r'.*', 'NN')
+            ])
+            tags = []
+            unigram_tag = UnigramTagger(train, backoff=regex_tag)
+            if self.options['tagger'] == 'bigram':
+                bigram_tag = BigramTagger(train, backoff=unigram_tag)
+                tags = bigram_tag.tag(tokens)
+            elif self.options['tagger'] == 'unigram':
+                tags = unigram_tag.tag(tokens)
+            else:
+                tags = regex_tag.tag(tokens)
+
+        elif self.options.get('tagger', DEFAULT_TAGGER) == 'pos':
+            tags = pos_tag(tokens)
 
         return self._dump(tags)
 
