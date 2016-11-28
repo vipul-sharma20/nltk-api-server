@@ -7,6 +7,7 @@ from nltk.tokenize import TweetTokenizer
 
 from app.constants import DEFAULT_STEMMER, DEFAULT_TOKENIZER
 
+
 class NLTKStem(object):
     """
     NLTK Stemmers used: Porter, Snowball and Lancaster
@@ -38,7 +39,7 @@ class NLTKStem(object):
         'porter': PorterStemmer,
         'snowball': SnowballStemmer,
         'lancaster': LancasterStemmer,
-        }
+    }
     dispatch['default'] = dispatch[DEFAULT_STEMMER]
 
     def __init__(self, options):
@@ -48,7 +49,7 @@ class NLTKStem(object):
         words = self._clean(self.options['words'])
         stemmer = self.options.get('stemmer', DEFAULT_STEMMER)
         stemmer_obj = self.dispatch.get(stemmer, self.dispatch[DEFAULT_STEMMER])
-        result= []
+        result = []
 
         if stemmer_obj == SnowballStemmer:
             ignore_stopwords = False
@@ -59,7 +60,8 @@ class NLTKStem(object):
             language = self.options.get('language', 'english')
 
             for word in words:
-                result.append(stemmer_obj(language, ignore_stopwords).stem(word))
+                result.append(
+                    stemmer_obj(language, ignore_stopwords).stem(word))
 
         else:
             for word in words:
@@ -72,9 +74,9 @@ class NLTKStem(object):
 
     def _dump(self, result):
         response = {
-                'status': True,
-                'result': result
-                }
+            'status': True,
+            'result': result
+        }
         return response
 
 
@@ -99,9 +101,9 @@ class NLTKTokenize(object):
     """
 
     dispatch = {
-            'word': word_tokenize,
-            'tweet': TweetTokenizer,
-            }
+        'word': word_tokenize,
+        'tweet': TweetTokenizer,
+    }
     dispatch['default'] = dispatch[DEFAULT_TOKENIZER]
 
     def __init__(self, options):
@@ -109,7 +111,8 @@ class NLTKTokenize(object):
 
     def tokenize(self):
         tokenizer = self.options.get('tokenizer', DEFAULT_TOKENIZER)
-        tokenizer_obj = self.dispatch.get(tokenizer, self.dispatch[DEFAULT_TOKENIZER])
+        tokenizer_obj = self.dispatch.get(tokenizer,
+                                          self.dispatch[DEFAULT_TOKENIZER])
 
         if tokenizer_obj == word_tokenize:
             result = tokenizer_obj(self.options['sentence'])
@@ -121,9 +124,9 @@ class NLTKTokenize(object):
 
     def _dump(self, result):
         response = {
-                'status': True,
-                'result': result
-                }
+            'status': True,
+            'result': result
+        }
         return response
 
 
@@ -159,8 +162,7 @@ class NLTKTag(object):
 
     def _dump(self, result):
         response = {
-                'status': True,
-                'result': result
-                }
+            'status': True,
+            'result': result
+        }
         return response
-

@@ -18,7 +18,7 @@ class StemView(APIView):
             return Response({
                 'message': 'words parameter missing',
                 'status': False,
-                })
+            })
 
         stem_obj = NLTKStem(data)
 
@@ -38,7 +38,7 @@ class TokenizeView(APIView):
             return Response({
                 'message': 'sentence parameter missing',
                 'status': False
-                })
+            })
 
         tokenize_obj = NLTKTokenize(data)
         res = tokenize_obj.tokenize()
@@ -58,10 +58,9 @@ class POSTagView(APIView):
             return Response({
                 'message': 'sentence parameter missing',
                 'status': False
-                })
+            })
 
         pos_obj = NLTKTag(data)
         res = pos_obj.pos_tag()
 
         return Response(res)
-
