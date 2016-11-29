@@ -1,9 +1,7 @@
-from django.shortcuts import render
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from util import NLTKStem, NLTKTokenize, NLTKTag
+from util import NLTKStem, NLTKTokenize, NLTKTag, NLTKner
 
 
 class StemView(APIView):
@@ -64,3 +62,24 @@ class POSTagView(APIView):
         res = pos_obj.pos_tag()
 
         return Response(res)
+
+
+class NERView(APIView):
+    """
+    View for Named Entity Recognition
+    """
+
+    def get(self, request):
+        data = request.GET
+
+        if not data.get('sentence'):
+            return Response({
+                'message': 'sentence parameter missing',
+                'status': False
+            })
+
+        ner_obj = NLTKner(data)
+        res = ner_obj.ner()
+
+        return Response(res)
+

@@ -1,9 +1,10 @@
+import nltk
 from nltk.stem.porter import PorterStemmer
 from nltk.stem import SnowballStemmer
 from nltk.stem.lancaster import LancasterStemmer
 
 from nltk import word_tokenize, pos_tag, UnigramTagger, BigramTagger, \
-    RegexpTagger
+    RegexpTagger, ne_chunk, sent_tokenize
 from nltk.tokenize import TweetTokenizer
 from nltk.corpus import brown
 
@@ -232,3 +233,52 @@ class NLTKTag(object):
             'result': result
         }
         return response
+
+
+class NLTKner(object):
+    """
+    NLTK NER used: ne_chunk
+
+    Accepts:
+
+    /api/ner?sentence=<sentence>/
+    including any query parameter accepted by /api/tag/
+
+    Query Parameters:
+
+        * Mandatory:
+            1. sentence:
+                type: string
+
+        * Optional:
+            1. any query parameter acceptable by /api/tag/
+    """
+
+    def __init__(self, options):
+        self.options = options
+
+    def ner(self):
+        pos_obj = NLTKTag(self.options)
+        res = pos_obj.pos_tag()
+
+        tagged_sentence = res['result']
+        chunked_sentence = ne_chunk(tagged_sentence)
+        tokens = self._parse(chunked_sentence)
+        return self._dump(tokens)
+
+    def _parse(self, tree):
+        n_tokens = []
+        for node in tree:
+            if isinstance(node, nltk.tree.Tree):
+                if node.label() in ['NE', 'PERSON']:
+                    for leaf in node.leaves():
+                        n_tokens.append(leaf[0])
+        return n_tokens
+
+    def _dump(self, tokens):
+        response = {
+                'status': True,
+                'result': tokens
+                }
+        return response
+
