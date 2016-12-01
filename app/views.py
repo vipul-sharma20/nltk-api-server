@@ -4,33 +4,6 @@ from rest_framework.response import Response
 from util import NLTKStem, NLTKTokenize, NLTKTag, NLTKner
 
 
-class HomeView(APIView):
-    """
-    Landing Page View
-    """
-
-    """
-    /api/tokenize?sentence=<sentence>/
-    /api/tokenize?sentence=<sentence>&tokenizer=<word/tweet/default>/
-    /api/ner?sentence=<sentence>/
-    """
-    def get(self, request):
-        res = {
-            'endpoints': [
-                '/api/stem?words=<word1,word2,word3>/',
-                '/api/stem?words=<word1,word2>&stemmer=<porter/snowball/lancaster/default>/',
-                '/api/stem?words=<word1,word2>&stemmer=snowball&language<language>&ignore_stopwords=<true/false>/',
-                '/api/tag?sentence=<sentence>/',
-                '/api/tag?sentence=<sentence>&tagger=<pos/unigram/bigram>/',
-                '/api/tag?sentence=<sentence>&tagger=<pos/unigram/bigram>&train=<categories>',
-                '/api/'
-            ],
-            'message': 'see app/util.py for details',
-            'repository': 'https://github.com/vipul-sharma20/nltk-api-server',
-        }
-        return Response(res)
-
-
 class StemView(APIView):
     """
     View for Stemming words
