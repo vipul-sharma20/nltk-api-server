@@ -146,7 +146,7 @@ class NLTKTag(object):
     /api/tag?sentence=<sentence>/
     /api/tag?sentence=<sentence>&tagger=<pos/unigram/bigram/default>/
     /api/tag?sentence=<sentence>&tagger=<pos/unigram/bigram/default>&train=<categories>/
-
+    including any query parameter accepted by /api/tag/
 
     Query Parameters:
 
@@ -162,6 +162,7 @@ class NLTKTag(object):
                 value: 'news', 'editorial', 'reviews', 'religion',
                        'learned', 'science_fiction', 'romance', 'humor'
                 default: 'news'
+            3. any query parameter acceptable by /api/tag/
     """
 
     def __init__(self, options):
