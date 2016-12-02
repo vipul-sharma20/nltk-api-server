@@ -1,6 +1,6 @@
 import nltk
 from nltk.stem.porter import PorterStemmer
-from nltk.stem import SnowballStemmer
+from nltk.stem import SnowballStemmer, WordNetLemmatizer
 from nltk.stem.lancaster import LancasterStemmer
 
 from nltk import word_tokenize, pos_tag, UnigramTagger, BigramTagger, \
@@ -146,7 +146,7 @@ class NLTKTag(object):
     /api/tag?sentence=<sentence>/
     /api/tag?sentence=<sentence>&tagger=<pos/unigram/bigram/default>/
     /api/tag?sentence=<sentence>&tagger=<pos/unigram/bigram/default>&train=<categories>/
-
+    including any query parameter accepted by /api/tag/
 
     Query Parameters:
 
@@ -162,6 +162,7 @@ class NLTKTag(object):
                 value: 'news', 'editorial', 'reviews', 'religion',
                        'learned', 'science_fiction', 'romance', 'humor'
                 default: 'news'
+            3. any query parameter acceptable by /api/tag/
     """
 
     def __init__(self, options):
@@ -281,4 +282,26 @@ class NLTKner(object):
                 'result': tokens
                 }
         return response
+
+
+class NLTKLemmatize(object):
+    """
+    NLTK Lemmatizer used: WordNetLemmatizer
+    """
+
+    def __init__(self, options):
+        self.options = options
+
+    def lemma(self):
+        lemma_obj = WordNetLemmatizer()
+        result = []
+        for word in self.options['words']:
+            result.append(lemma_obj.lemmatize(word))
+        self._dump(result)
+
+    def _dump(self, result):
+        response = {
+                'status': True,
+                'result': result
+                }
 
