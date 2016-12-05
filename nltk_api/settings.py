@@ -37,7 +37,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'app.middleware.validate_parameter_middleware.ValidateParameterMiddleware',
+    'app.middleware.validate_middleware.ValidateParameterMiddleware',
 )
 
 ROOT_URLCONF = 'nltk_api.urls'

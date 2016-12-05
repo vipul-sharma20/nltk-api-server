@@ -7,6 +7,7 @@ class ValidateParameterMiddleware(object):
             'words': ['stem', 'lemma'],
             'sentence': ['tokenize', 'ner', 'tag']
             }
+
     def process_request(self, request):
         if request.path != '/':
             segments = request.path.split('/')
