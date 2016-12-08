@@ -66,13 +66,10 @@ class NLTKStem(object):
                     ignore_stopwords = True
             language = self.options.get('language', 'english')
 
-            for word in words:
-                result.append(
-                    stemmer_obj(language, ignore_stopwords).stem(word))
-
+            result = [stemmer_obj(language, ignore_stopwords).stem(word)
+                        for word in words]
         else:
-            for word in words:
-                result.append(stemmer_obj().stem(word))
+            result = [stemmer_obj().stem(word) for word in words]
 
         return self._dump(result)
 
@@ -294,9 +291,7 @@ class NLTKLemmatize(object):
 
     def lemma(self):
         lemma_obj = WordNetLemmatizer()
-        result = []
-        for word in self.options['words']:
-            result.append(lemma_obj.lemmatize(word))
+        result = [lemma_obj.lemmatize(word) for word in self.options['words']]
         self._dump(result)
 
     def _dump(self, result):
