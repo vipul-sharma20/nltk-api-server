@@ -1,7 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from util import NLTKStem, NLTKTokenize, NLTKTag, NLTKner, NLTKLemmatize
+from util import NLTKStem, NLTKTokenize, NLTKTag, NLTKner, NLTKLemmatize, \
+        NLTKSentiment
 
 
 class HomeView(APIView):
@@ -22,7 +23,8 @@ class HomeView(APIView):
                 '/api/tag?sentence=<sentence>&tagger=<pos/unigram/bigram>&train=<categories>',
                 '/api/tag?sentence=<sentence>&tokenizer=<word/tweet/default>',
                 '/api/ner?sentence=<sentence>',
-                '/api/ner?sentence=<sentence>&tokenizer=<word/tweet/default>'
+                '/api/ner?sentence=<sentence>&tokenizer=<word/tweet/default>',
+                '/api/sentiment?sentence=<sentence>'
             ],
             'message': 'see app/util.py for details',
             'repository': 'https://github.com/vipul-sharma20/nltk-api-server',
@@ -93,3 +95,17 @@ class LemmatizeView(APIView):
         res = lemma_obj.lemma()
 
         return Response(res)
+
+
+class SentimentView(APIView):
+    """
+    View for Sentiment Analysis
+    """
+
+    def get(self, request):
+        data = request.GET
+        senti_obj = NLTKSentiment(data)
+        res = senti_obj.sentiment()
+
+        return Response(res)
+

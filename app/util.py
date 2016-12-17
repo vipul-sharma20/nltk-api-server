@@ -7,6 +7,7 @@ from nltk import word_tokenize, pos_tag, UnigramTagger, BigramTagger, \
     RegexpTagger, ne_chunk, sent_tokenize
 from nltk.tokenize import TweetTokenizer
 from nltk.corpus import brown
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 from app.constants import DEFAULT_STEMMER, DEFAULT_TOKENIZER, DEFAULT_TAGGER, \
     DEFAULT_TRAIN, TRAINERS
@@ -67,7 +68,7 @@ class NLTKStem(object):
             language = self.options.get('language', 'english')
 
             result = [stemmer_obj(language, ignore_stopwords).stem(word)
-                        for word in words]
+                      for word in words]
         else:
             result = [stemmer_obj().stem(word) for word in words]
 
@@ -291,12 +292,38 @@ class NLTKLemmatize(object):
 
     def lemma(self):
         lemma_obj = WordNetLemmatizer()
-        result = [lemma_obj.lemmatize(word) for word in self.options['words']]
-        self._dump(result)
+        words = self._clean(self.options['words'])
+        result = [lemma_obj.lemmatize(word) for word in words]
+        return self._dump(result)
+
+    def _clean(self, words):
+        return words.split(',')
 
     def _dump(self, result):
         response = {
                 'status': True,
                 'result': result
                 }
+        return response
+
+
+class NLTKSentiment(object):
+    """
+    NLTK Sentiment Analyzer used: vader
+    """
+
+    def __init__(self, options):
+        self.options = options
+
+    def sentiment(self):
+        sentiment_obj = SentimentIntensityAnalyzer()
+        result = sentiment_obj.polarity_scores(self.options['sentence'])
+        return self._dump(result)
+
+    def _dump(self, result):
+        response = {
+                'status': True,
+                'result': result
+                }
+        return response
 

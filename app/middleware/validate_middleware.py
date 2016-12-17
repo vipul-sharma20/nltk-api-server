@@ -5,7 +5,7 @@ class ValidateParameterMiddleware(object):
 
     params = {
             'words': ['stem', 'lemma'],
-            'sentence': ['tokenize', 'ner', 'tag']
+            'sentence': ['tokenize', 'ner', 'tag', 'sentiment']
             }
 
     def process_request(self, request):
@@ -14,9 +14,11 @@ class ValidateParameterMiddleware(object):
             if len(segments) > 3:
                 view_type = segments[2]
                 message = ''
-                if view_type in self.params['sentence'] and not request.GET.get('sentence'):
+                if view_type in self.params['sentence'] and not \
+                        request.GET.get('sentence'):
                     message = 'sentence'
-                elif view_type in self.params['words'] and not request.GET.get('words'):
+                elif view_type in self.params['words'] and not \
+                        request.GET.get('words'):
                     message = 'words'
                 if message:
                     return JsonResponse({
