@@ -285,6 +285,15 @@ class NLTKner(object):
 class NLTKLemmatize(object):
     """
     NLTK Lemmatizer used: WordNetLemmatizer
+
+    Accepts:
+    /api/lemma?words=<words>/
+
+    Query Parameters:
+
+        * Mandatory:
+            1. words:
+                type: string comma separated
     """
 
     def __init__(self, options):
@@ -310,6 +319,15 @@ class NLTKLemmatize(object):
 class NLTKSentiment(object):
     """
     NLTK Sentiment Analyzer used: vader
+
+    Accepts:
+    /api/sentiment?sentence=<sentence>/
+
+    Query Parameters:
+
+        * Mandatory:
+            1. sentence:
+                type: string
     """
 
     def __init__(self, options):
