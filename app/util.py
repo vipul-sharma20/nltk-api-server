@@ -1,8 +1,10 @@
+import os.path
+from pickle import load, dump
+
 import nltk
 from nltk.stem.porter import PorterStemmer
 from nltk.stem import SnowballStemmer, WordNetLemmatizer
 from nltk.stem.lancaster import LancasterStemmer
-
 from nltk import word_tokenize, pos_tag, UnigramTagger, BigramTagger, \
     RegexpTagger, ne_chunk, sent_tokenize
 from nltk.tokenize import TweetTokenizer
@@ -12,8 +14,6 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from app.constants import DEFAULT_STEMMER, DEFAULT_TOKENIZER, DEFAULT_TAGGER, \
     DEFAULT_TRAIN, TRAINERS
 
-import os.path
-from pickle import load, dump
 
 
 class NLTKStem(object):
