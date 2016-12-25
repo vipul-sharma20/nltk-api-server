@@ -30,16 +30,16 @@ NLTK Stemmers used: Porter, Snowball and Lancaster
 * Query Parameters:
 
   * Mandatory:
-      1. `words`:
+      * `words`:
           type: string comma separated
   * Optional:
-      1. `stemmer`:
+      * `stemmer`:
           value: porter/snowball/lancaster/default
           default: snowball
-      2. `ignore_stopwords`: Only for Snowball Stemmer
+      * `ignore_stopwords`: Only for Snowball Stemmer
            value: true/false
            default: false
-      3. `language`: Only for Snowball Stemmer
+      * `language`: Only for Snowball Stemmer
            value: see SnowballStemmer.languages
            default: english
 
@@ -50,16 +50,15 @@ NLTK Stemmers used: Porter, Snowball and Lancaster
 * `localhost:9000/api/stem?words=dangerous,monitoring,testing`
 
     {
-	"status": true,
-	"result": [
-	    "danger",
-	    "monitor",
-	    "test"
-	]
+        "status": true,
+        "result": [
+            "danger",
+            "monitor",
+            "test"
+        ]
    }
 
 * `localhost:9000/api/stem/?words=dangerous,monitoring,testing&stemmer=snowball`
-
 
     {
         "status": true,
@@ -69,6 +68,9 @@ NLTK Stemmers used: Porter, Snowball and Lancaster
             "vertex"
         ]
     }
+
+* The above examples do not cover all cases. See the section above examples
+  for more features
 
 ----------------
 2. Lemmatization
@@ -81,9 +83,9 @@ NLTK Lemmatizer used: WordNetLemmatizer
 
 * Query Parameters:
    * Mandatory:
-      1. `words`:
+       * `words`:
 
-          type: string comma separated
+           type: string comma separated
 
 ------------
 2.1 Examples
@@ -92,7 +94,7 @@ NLTK Lemmatizer used: WordNetLemmatizer
 
     {
         "status":true,
-        "result":[
+        "result": [
             "dog",
             "cat",
             "vertex"
@@ -116,75 +118,115 @@ NLTK POS tagger used: pos_tag, UnigramTagger, BigramTagger & RegexpTagger
 * Query Parameters:
 
   * Mandatory:
-     1. sentence:
-         type: string
+      * sentence:
+
+          type: string
 
   * Optional:
-     1. tagger:
 
-         value: pos/unigram/bigram/regex
+      * tagger:
 
-         default: pos_tag
+          value: pos/unigram/bigram/regex
 
-     2. train (iff unigram/bigram):
+          default: pos_tag
 
-         value: 'news', 'editorial', 'reviews', 'religion',
-                'learned', 'science_fiction', 'romance', 'humor'
+      * train (iff unigram/bigram):
 
-         default: 'news'
+          value: 'news', 'editorial', 'reviews', 'religion',
+                 'learned', 'science_fiction', 'romance', 'humor'
 
-     3. any query parameter acceptable by /api/tag/
+          default: 'news'
+
+      * any query parameter acceptable by /api/tag/
 
 ------------
 3.1 Examples
 ------------
 * `localhost/api/sentence=this is a test`
 
-	{
-		"status": true,
-		"result": [
-			[
-				"this",
-				"DT"
-			],
-			[
-				"is",
-				"VBZ"
-			],
-			[
-				"a",
-				"DT"
-			],
-			[
-				"test",
-				"NN"
-			]
-		]
-	}
+    {
+        "status": true,
+        "result": [
+            [
+                "this",
+                "DT"
+            ],
+            [
+                "is",
+                "VBZ"
+            ],
+            [
+                "a",
+                "DT"
+            ],
+            [
+                "test",
+                "NN"
+            ]
+        ]
+    }
 
 * `localhost/api/sentence=this is a test&tagger=unigram`
 
-	{
-		"status": true,
-		"result": [
-			[
-				"this",
-				"DT"
-			],
-			[
-				"is",
-				"BEZ"
-			],
-			[
-				"a",
-				"AT"
-			],
-			[
-				"test",
-				"NN"
-			]
-		]
-	}
+    {
+        "status": true,
+        "result": [
+            [
+                "this",
+                "DT"
+            ],
+            [
+                "is",
+                "BEZ"
+            ],
+            [
+                "a",
+                "AT"
+            ],
+            [
+                "test",
+                "NN"
+            ]
+        ]
+    }
 
-* **Remeber we can also use trained data alongwith the unigram/bigram tagger:
+* The above examples do not cover all cases. See the section above examples
+  for more features
+* **Remember we can also use trained data alongwith the unigram/bigram tagger:
     'news', 'editorial', 'reviews', 'religion', 'learned', 'science_fiction', 'romance', 'humor'**
+
+---------------------------
+4. Named Entity Recognition
+---------------------------
+
+NLTK NER used: ne_chunk
+
+* Accepts:
+
+  * /api/ner?sentence=<sentence>/
+
+  including any query parameter accepted by /api/tag/
+
+* Query Parameters:
+
+  * Mandatory:
+      * `sentence`:
+
+          type: string
+
+      * Optional:
+
+          * any query parameter acceptable by /api/tag/
+
+------------
+4.1 Examples
+------------
+
+* `localhost/api/ner?sentence=At the Olympics in August, Phelps picked up five gold medal`
+
+    {
+        "status": true,
+        "result": [
+            "Phelps"
+        ]
+    }
