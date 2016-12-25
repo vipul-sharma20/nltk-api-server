@@ -48,9 +48,27 @@ NLTK Stemmers used: Porter, Snowball and Lancaster
 ------------
 
 * `localhost:9000/api/stem?words=dangerous,monitoring,testing`
-    `{"status":true,"result":["danger","monitor","test"]}`
+
+    {
+	"status": true,
+	"result": [
+	    "danger",
+	    "monitor",
+	    "test"
+	]
+   }
+
 * `localhost:9000/api/stem/?words=dangerous,monitoring,testing&stemmer=snowball`
-    `{"status":true,"result":["danger","monitor","test"]}`
+
+
+    {
+        "status": true,
+        "result": [
+            "dog",
+            "cat",
+            "vertex"
+        ]
+    }
 
 ----------------
 2. Lemmatization
@@ -64,10 +82,109 @@ NLTK Lemmatizer used: WordNetLemmatizer
 * Query Parameters:
    * Mandatory:
       1. `words`:
+
           type: string comma separated
 
 ------------
 2.1 Examples
 ------------
 * `localhost/api/lemma/?words=dogs,cats,vertices`
-    `{"status":true,"result":["dog","cat","vertex"]}`
+
+    {
+        "status":true,
+        "result":[
+            "dog",
+            "cat",
+            "vertex"
+        ]
+    }
+
+-------------------------
+3. Part of Speech Tagging
+-------------------------
+
+NLTK POS tagger used: pos_tag, UnigramTagger, BigramTagger & RegexpTagger
+
+* Accepts:
+
+  * /api/tag?sentence=<sentence>/
+  * /api/tag?sentence=<sentence>&tagger=<pos/unigram/bigram/default>/
+  * /api/tag?sentence=<sentence>&tagger=<pos/unigram/bigram/default>&train=<categories>/
+
+  including any query parameter accepted by /api/tag/
+
+* Query Parameters:
+
+  * Mandatory:
+     1. sentence:
+         type: string
+
+  * Optional:
+     1. tagger:
+
+         value: pos/unigram/bigram/regex
+
+         default: pos_tag
+
+     2. train (iff unigram/bigram):
+
+         value: 'news', 'editorial', 'reviews', 'religion',
+                'learned', 'science_fiction', 'romance', 'humor'
+
+         default: 'news'
+
+     3. any query parameter acceptable by /api/tag/
+
+------------
+3.1 Examples
+------------
+* `localhost/api/sentence=this is a test`
+
+	{
+		"status": true,
+		"result": [
+			[
+				"this",
+				"DT"
+			],
+			[
+				"is",
+				"VBZ"
+			],
+			[
+				"a",
+				"DT"
+			],
+			[
+				"test",
+				"NN"
+			]
+		]
+	}
+
+* `localhost/api/sentence=this is a test&tagger=unigram`
+
+	{
+		"status": true,
+		"result": [
+			[
+				"this",
+				"DT"
+			],
+			[
+				"is",
+				"BEZ"
+			],
+			[
+				"a",
+				"AT"
+			],
+			[
+				"test",
+				"NN"
+			]
+		]
+	}
+
+* **Remeber we can also use trained data alongwith the unigram/bigram tagger:
+    'news', 'editorial', 'reviews', 'religion', 'learned', 'science_fiction', 'romance', 'humor'**
