@@ -31,16 +31,25 @@ NLTK Stemmers used: Porter, Snowball and Lancaster
 
   * Mandatory:
       * `words`:
+
           type: string comma separated
   * Optional:
       * `stemmer`:
+
           value: porter/snowball/lancaster/default
+
           default: snowball
+
       * `ignore_stopwords`: Only for Snowball Stemmer
+
            value: true/false
+
            default: false
+
       * `language`: Only for Snowball Stemmer
+
            value: see SnowballStemmer.languages
+
            default: english
 
 ------------
@@ -79,6 +88,7 @@ NLTK Stemmers used: Porter, Snowball and Lancaster
 NLTK Lemmatizer used: WordNetLemmatizer
 
 * Accepts:
+
   * `/api/lemma?words=<words>/`
 
 * Query Parameters:
@@ -109,28 +119,30 @@ NLTK POS tagger used: pos_tag, UnigramTagger, BigramTagger & RegexpTagger
 
 * Accepts:
 
-  * /api/tag?sentence=<sentence>/
-  * /api/tag?sentence=<sentence>&tagger=<pos/unigram/bigram/default>/
-  * /api/tag?sentence=<sentence>&tagger=<pos/unigram/bigram/default>&train=<categories>/
+  * `/api/tag?sentence=<sentence>/`
+
+  * `/api/tag?sentence=<sentence>&tagger=<pos/unigram/bigram/default>/`
+
+  * `/api/tag?sentence=<sentence>&tagger=<pos/unigram/bigram/default>&train=<categories>/`
 
   including any query parameter accepted by /api/tag/
 
 * Query Parameters:
 
   * Mandatory:
-      * sentence:
+      * `sentence`:
 
           type: string
 
   * Optional:
 
-      * tagger:
+      * `tagger`:
 
           value: pos/unigram/bigram/regex
 
           default: pos_tag
 
-      * train (iff unigram/bigram):
+      * `train` (iff unigram/bigram):
 
           value: 'news', 'editorial', 'reviews', 'religion',
                  'learned', 'science_fiction', 'romance', 'humor'
@@ -203,7 +215,7 @@ NLTK NER used: ne_chunk
 
 * Accepts:
 
-  * /api/ner?sentence=<sentence>/
+  * `/api/ner?sentence=<sentence>/`
 
   including any query parameter accepted by /api/tag/
 
