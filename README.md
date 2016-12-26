@@ -270,12 +270,12 @@ NLTK Sentiment Analyzer used: vader
 
 * `localhost/api/sentiment?sentence=At the Olympics in August, Phelps picked up five gold medal`
 
-       {
+        {
             "status": true,
             "result": {
-                    "neg": 0,
-                    "neu": 0.256,
-                    "pos": 0.744,
-                    "compound": 0.4404
-                }
+                "neg": 0,
+                "neu": 0.256,
+                "pos": 0.744,
+                "compound": 0.4404
             }
+        }
