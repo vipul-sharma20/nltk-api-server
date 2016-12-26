@@ -279,3 +279,26 @@ NLTK Sentiment Analyzer used: vader
                 "compound": 0.4404
             }
         }
+
+-------------------
+**6. Run on local**
+-------------------
+
+* `git clone git@github.com:vipul-sharma20/nltk-api-server.git`
+* `cd nltk-api-server`
+* `sudo pip install virtualenv`
+     * Python 2.7.9 and later (on the python2 series), and Python 3.4 and later include pip by default, so you may have pip already.
+     * If you don't have pip installed, visit here to see steps to install virtualenv: [https://virtualenv.readthedocs.org/en/latest/installation.html](https://virtualenv.readthedocs.org/en/latest/installation.html)
+* `virtualenv nltk-api`
+* `source nltk-api/bin/activate`
+* `pip install -r requirements.txt` (wait till the requirements are installed)
+* `python manage.py runserver` This will run the application on [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+
+**IMPORTANT:** You will require some corpora and trained models
+for the code to run. You can refer to: [http://www.nltk.org/data.html](http://www.nltk.org/data.html)
+
+* Interactive Method:
+
+        In [1]: import nltk
+
+        In [2]: nltk.download()
